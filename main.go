@@ -64,6 +64,52 @@ func (t *Tree) Insert(val int) *Tree {
 	return t
 }
 
+func getSubTreeHeight(node *Node) int {
+	leftHeight := 0
+	rightHeight := 0
+
+	if node == nil {
+		return 0
+	}
+
+	if node.Left != nil {
+		leftHeight = 1 + getSubTreeHeight(node.Left)
+	}
+
+	if node.Right != nil {
+		rightHeight = 1 + getSubTreeHeight(node.Right)
+	}
+
+	if leftHeight > rightHeight {
+		return leftHeight
+	} else {
+		return rightHeight
+	}
+}
+
+func isNodeBalanced(node *Node) bool {
+	leftHeight := getSubTreeHeight(node.Left)
+	rightHeight := getSubTreeHeight(node.Right)	
+	diff := leftHeight - rightHeight
+	
+	if diff >= -1 && diff <= 1 {
+		return true
+	}
+
+	return false	
+}
+
+func (t *Tree) IsBalanced() bool {
+	if t.Root == nil {
+		return true
+	}
+
+	leftHeight := isNodeBalanced(t.Root.Left)
+	rightHeight := isNodeBalanced(t.Root.Right)
+
+	return leftHeight && rightHeight
+}
+
 // NewNode creates a new node
 func NewNode(val int) *Node {
 	return &Node{Val: val, Left: nil, Right: nil, Parent: nil}
@@ -72,10 +118,18 @@ func NewNode(val int) *Node {
 func main() {
 	fmt.Println("Go Tree")
 	tree := &Tree{Root: nil}
-	tree.Insert(4)
+	tree.Insert(15)
 	tree.Insert(2)
 	tree.Insert(3)
 	tree.Insert(1)
 	tree.Insert(5)
+	tree.Insert(16)
+	tree.Insert(17)
+	tree.Insert(44)
+	tree.Insert(55)
 	tree.printInOrder()
+	
+	fmt.Printf("Left Subtree height is %d\n", getSubTreeHeight(tree.Root.Left))
+	fmt.Printf("Right Subtree height is %d\n", getSubTreeHeight(tree.Root.Right))
+	fmt.Printf("Tree balanced? is %v\n", tree.IsBalanced())
 }
